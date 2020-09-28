@@ -13,6 +13,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+/**
+ * Мы реализуем интерфейс Collector, который типизируется тремя разными типами:
+ * входной тип для коллектора (UserMeal в нашем случае),
+ * тип контейнера для хранения промежуточных вычислений (HashMap<LocalDate, Integer> в нашем случае)
+ * и выходной тип коллектора, который он возвращает (опять List<UserMealWithExcess>)
+ */
 public class UserMealWithExcessCollector implements Collector<UserMeal, List<UserMealWithExcess>, List<UserMealWithExcess>> {
 
     private final LocalTime startTime;
@@ -26,11 +32,18 @@ public class UserMealWithExcessCollector implements Collector<UserMeal, List<Use
         this.caloriesPerDay = caloriesPerDay;
     }
 
+    /**
+     * Supplier возвращает лямбда-выражение, создающее контейнер для хранения промежуточных выражений:
+     */
     @Override
     public Supplier<List<UserMealWithExcess>> supplier() {
         return ArrayList::new;
     }
 
+    /**
+    * Accumulator добавляет очередное значение в контейнер промежуточных значений.
+    * Если быть точным, то accumulator возвращает лямбда-выражение, которое обрабатывает очередное значение и сохраняет его
+    */
     @Override
     public BiConsumer<List<UserMealWithExcess>, UserMeal> accumulator() {
         return (userMealWithExcesses, userMeal) -> {
@@ -40,6 +53,10 @@ public class UserMealWithExcessCollector implements Collector<UserMeal, List<Use
         };
     }
 
+    /**
+     * Combiner возвращает лямбда-выражение, объединяющее два контейнера промежуточных значений в один.
+     * Дело в том, что Stream API может создать несколько таких контейнеров, для параллельной обработки и в конце слить их в один общий контейнер.
+     */
     @Override
     public BinaryOperator<List<UserMealWithExcess>> combiner() {
         return (left, right) -> {
@@ -53,6 +70,10 @@ public class UserMealWithExcessCollector implements Collector<UserMeal, List<Use
         };
     }
 
+    /**
+     * Finisher возвращает лямбда-выражение, которое производит финальное преобразование: обрабатывает содержимое контейнера промежуточных результатов
+     * и приводит его к заданному выходному типу
+     */
     @Override
     public Function<List<UserMealWithExcess>, List<UserMealWithExcess>> finisher() {
         return userMealWithExcesses -> {
@@ -62,9 +83,12 @@ public class UserMealWithExcessCollector implements Collector<UserMeal, List<Use
         };
     }
 
+    /**
+     * Декларирование свойств коллектора.
+     */
     @Override
     public Set<Characteristics> characteristics() {
-        return EnumSet.of(Characteristics.CONCURRENT);
+        return EnumSet.of(Characteristics.CONCURRENT, Characteristics.UNORDERED);
     }
 
 }
