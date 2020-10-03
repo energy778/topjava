@@ -60,7 +60,7 @@ public class UserMealsUtil {
         return meals.stream().collect(new UserMealWithExcessCollector(startTime, endTime, caloriesPerDay));
     }
 
-    public static UserMealWithExcess buildUserMealWithExcess(UserMeal userMeal, boolean excess){
+    public static UserMealWithExcess buildUserMealWithExcess(UserMeal userMeal, boolean excess) {
         return new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), excess);
     }
 
