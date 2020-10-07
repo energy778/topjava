@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -27,10 +28,10 @@ public class MealServlet extends HttpServlet {
     private static final String MEALS_LIST = "/meals.jsp";
 
     private static final Logger log = getLogger(MealServlet.class);
-    private static final MealService mealService = new MealServiceInMemory();
+    private final MealService mealService = new MealServiceInMemory();
 
-    // TODO: 007 07.10.20 initDB 
-    static {
+    public MealServlet() {
+        super();
         defaultMeals.forEach(mealService::save);
     }
 
@@ -62,18 +63,16 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("delete".equalsIgnoreCase(action)){
-            forward = MEALS_LIST;
-            long mealId = Long.parseLong(request.getParameter("id"));
-            boolean success = mealService.delete(mealId);
-            request.setAttribute("meals", getMealsTO(mealService.getAll()));
-            request.setAttribute("deleteSuccess", success);
+            mealService.delete(Long.parseLong(request.getParameter("id")));
+            response.sendRedirect("meals");
+            return;
 
         } else if ("edit".equalsIgnoreCase(action)
                 || "create".equalsIgnoreCase(action)){
             forward = INSERT_OR_EDIT;
             Meal currentMeal;
             if ("create".equalsIgnoreCase(action))
-                currentMeal = new Meal(LocalDateTime.now(), "",0);
+                currentMeal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "",0);
             else
                 currentMeal = mealService.get(Long.parseLong(request.getParameter("id")));
             request.setAttribute("meal", currentMeal);
