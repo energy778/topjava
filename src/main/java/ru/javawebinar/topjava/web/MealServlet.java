@@ -30,8 +30,9 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
     private final MealService mealService = new MealServiceInMemory();
 
-    public MealServlet() {
-        super();
+    @Override
+    public void init() throws ServletException {
+        super.init();
         defaultMeals.forEach(mealService::save);
     }
 
@@ -41,11 +42,9 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String id = request.getParameter("id");
-        Meal meal;
-        if (id == null || id.isEmpty()){
-            meal = new Meal();
-        } else {
-            meal = mealService.get(Long.parseLong(id));
+        Meal meal = new Meal();
+        if (id != null && !id.isEmpty()){
+            meal.setId(Long.parseLong(id));
         }
         meal.setDateTime(LocalDateTime.parse(request.getParameter("dateTime")));
         meal.setDescription(request.getParameter("description"));
