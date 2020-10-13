@@ -20,14 +20,19 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, meal.getUserId()));
+        MealsUtil.meals.forEach(meal -> {
+            switch (meal.getCalories()) {
+                case 333:
+                case 410:
+                    save(meal, 2);
+                default:
+                    save(meal, 1);
+            }
+        });
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (meal.getUserId() == null || userId != meal.getUserId())
-            return null;
-
         Map<Integer, Meal> mealMap = dbUserMeal.computeIfAbsent(userId, ConcurrentHashMap::new);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
