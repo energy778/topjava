@@ -17,13 +17,13 @@ public class MealService {
         this.repository = repository;
     }
 
-    public Meal create(Meal meal, int authUserId) {
-        meal.setUserId(authUserId);
-        return repository.save(meal, authUserId);
+    public Meal create(Meal meal, int userId) {
+        meal.setUserId(userId);
+        return repository.save(meal, userId);
     }
 
-    public void update(Meal meal, int authUserId) {
-        checkNotFoundWithId(repository.save(meal, authUserId), meal.getId());
+    public void update(Meal meal, int userId) {
+        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
     public void delete(int id, int userId) {

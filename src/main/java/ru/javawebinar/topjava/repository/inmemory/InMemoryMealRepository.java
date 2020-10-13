@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,12 +28,7 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.getUserId() == null || userId != meal.getUserId())
             return null;
 
-        Map<Integer, Meal> mealMap = dbUserMeal.compute(userId, (key, curMealMap) -> {
-            if (curMealMap == null)
-                return new ConcurrentHashMap<>();
-            return curMealMap;
-        });
-
+        Map<Integer, Meal> mealMap = dbUserMeal.computeIfAbsent(userId, ConcurrentHashMap::new);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             mealMap.put(meal.getId(), meal);
@@ -44,8 +40,8 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        Map<Integer, Meal> mealMap = dbUserMeal.getOrDefault(userId, new HashMap<>());
-        return mealMap.remove(id) != null;
+        return dbUserMeal.getOrDefault(userId, new HashMap<>())
+                .remove(id) != null;
     }
 
     @Override
@@ -57,7 +53,7 @@ public class InMemoryMealRepository implements MealRepository {
     public Collection<Meal> getAll(int userId) {
         return dbUserMeal.getOrDefault(userId, new HashMap<>()).values()
                 .stream()
-                .sorted((o1, o2) -> o2.getDate().compareTo(o1.getDate()))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
