@@ -33,6 +33,7 @@ public class SpringMain {
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             mealRestController.create(new Meal(LocalDateTime.of(2020, Month.DECEMBER, 31, 23, 59), "Завтрак", 500, 1));
             System.out.println(mealRestController.getAll());
+            System.out.println(mealRestController.get(56));
         }
     }
 }

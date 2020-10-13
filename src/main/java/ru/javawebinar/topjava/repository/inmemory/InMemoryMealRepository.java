@@ -33,16 +33,6 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-//        region first variant
-
-//        Meal meal = get(id, userId);
-//        if (meal == null)
-//            return false;
-//
-//        repository.remove(id);
-//        return true;
-
-//        endregion
         return repository.values().stream()
                 .filter(meal ->
                         meal.getId() == id && meal.getUserId() == userId)
@@ -54,7 +44,7 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal meal = repository.get(id);
-        if (meal.getUserId() == userId)
+        if (meal != null && meal.getUserId() == userId)
             return meal;
         return null;
     }
