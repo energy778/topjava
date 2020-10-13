@@ -40,7 +40,7 @@ public class MealServlet extends HttpServlet {
                 SecurityUtil.authUserId());
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        repository.save(meal);
+        repository.save(meal, SecurityUtil.authUserId());
         response.sendRedirect("meals");
     }
 

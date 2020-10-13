@@ -2,8 +2,6 @@ package ru.javawebinar.topjava.util;
 
 
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
-import ru.javawebinar.topjava.util.exception.ForbiddenException;
-import ru.javawebinar.topjava.util.exception.MealIncompleteEntityException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
@@ -41,13 +39,6 @@ public class ValidationUtil {
         } else if (entity.getId() != id) {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
         }
-    }
-
-    public static void checkMealOwner(Integer mealUserId, int authUserId) {
-        if (mealUserId == null)
-            throw new MealIncompleteEntityException("Field 'user id' in entity Meal must be filled");
-        if (!mealUserId.equals(authUserId))
-            throw new ForbiddenException("403. Forbidden. You don't have permission to access");
     }
 
 }

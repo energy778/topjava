@@ -6,7 +6,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.util.Collection;
 
-import static ru.javawebinar.topjava.util.ValidationUtil.checkMealOwner;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
@@ -19,13 +18,12 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int authUserId) {
-        checkMealOwner(meal.getUserId(), authUserId);
-        return repository.save(meal);
+        meal.setUserId(authUserId);
+        return repository.save(meal, authUserId);
     }
 
     public void update(Meal meal, int authUserId) {
-        checkMealOwner(meal.getUserId(), authUserId);
-        checkNotFoundWithId(repository.save(meal), meal.getId());
+        checkNotFoundWithId(repository.save(meal, authUserId), meal.getId());
     }
 
     public void delete(int id, int userId) {
