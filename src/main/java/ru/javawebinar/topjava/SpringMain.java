@@ -24,6 +24,7 @@ public class SpringMain {
             mealRestController.create(new Meal(LocalDateTime.of(2020, Month.DECEMBER, 31, 23, 59), "Завтрак", 500));
 
             System.out.println(mealRestController.getAll());
+            System.out.println(mealRestController.getAll(LocalDateTime.now().minusMonths(3), LocalDateTime.now().plusMonths(3)));
             System.out.println(mealRestController.get(56));
         }
     }
