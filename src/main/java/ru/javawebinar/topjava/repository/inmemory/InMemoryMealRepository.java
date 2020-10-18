@@ -26,7 +26,7 @@ public class InMemoryMealRepository implements MealRepository {
         MealsUtil.meals.forEach(meal -> {
             switch (meal.getCalories()) {
                 case 333:
-                case 410:
+                case 444:
                     save(meal, 2);
                 default:
                     save(meal, 1);
@@ -64,7 +64,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(LocalDate startDate, LocalDate endDate, int userId) {
-        return getMealsWithFilter(userId, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate));
+        return getMealsWithFilter(userId, meal -> DateTimeUtil.isBetweenClosed(meal.getDate(), startDate, endDate));
     }
 
     private Collection<Meal> getMealsWithFilter(int userId, Predicate<Meal> filter) {
