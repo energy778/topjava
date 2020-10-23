@@ -20,6 +20,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
+        "classpath:spring/spring-app-jdbc.xml",
         "classpath:spring/spring-db.xml"
 })
 @RunWith(SpringRunner.class)
@@ -41,17 +42,19 @@ public class MealServiceTest {
         Meal created = service.create(newMeal, ADMIN_ID);
         newMeal.setId(created.getId());
         assertMatch(created, newMeal);
+//        проверь еще возвращаемое из service.create значение. хм.. вроде бы проверено
     }
 
     @Test
     public void duplicateDateTimeCreate() throws Exception {
-        assertThrows(DataAccessException.class, () -> service.create(getClone(MEAL1), USER_ID));
+//        было бы правильнее поля, кроме dateTime, поменять. согласен, можно переписать
+        assertThrows(DataAccessException.class, () -> service.create(getClone(meal_1), USER_ID));
     }
 
     @Test
     public void get() throws Exception {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
-        assertMatch(actual, ADMIN_MEAL1);
+        assertMatch(actual, admin_meal_1);
     }
 
     @Test
@@ -72,7 +75,7 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() throws Exception {
         assertMatch(service.getBetweenInclusive(of(2030, 1, 30), of(2030, 1, 31), USER_ID),
-                MEAL7, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+                meal_7, meal_6, meal_5, meal_4, meal_3, meal_2, meal_1);
     }
 
     @Test
@@ -84,7 +87,7 @@ public class MealServiceTest {
 
     @Test
     public void updateOtherUser() throws Exception {
-        assertThrows(NotFoundException.class, () -> service.update(MEAL1, ADMIN_ID));
+        assertThrows(NotFoundException.class, () -> service.update(meal_1, ADMIN_ID));
     }
 
     @Test
