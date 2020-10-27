@@ -29,14 +29,6 @@ public class JpaMealRepository implements MealRepository {
     @Transactional
     public Meal save(Meal meal, int userId) {
         meal.setUser(userRepository.get(userId));
-//        region попытка сделать через запрос
-//        em.createNamedQuery(Meal.UPDATE, Meal.class)
-//                .setParameter("mealParam", meal)
-//                .setParameter("id", meal.getId())
-//                .setParameter("userId", userId)
-//                .executeUpdate();
-//        return meal;
-//        endregion
         if (meal.isNew()) {
             em.persist(meal);
             return meal;
@@ -50,10 +42,10 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        return em.createNamedQuery(Meal.DELETE, Meal.class)
+        return em.createQuery(Meal.DELETE)
                 .setParameter("id", id)
                 .setParameter("userId", userId)
-                .getSingleResult() != null;
+                .executeUpdate() != 0;
     }
 
     @Override
