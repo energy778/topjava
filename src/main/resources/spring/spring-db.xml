@@ -18,6 +18,18 @@
 
     <!--    region profiles-->
 
+    <beans profile="h2">
+        <context:property-placeholder location="classpath:db/h2.properties" system-properties-mode="OVERRIDE"/>
+
+        <!--no pooling-->
+        <bean id="dataSource"
+              class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+              p:driverClassName="org.h2.Driver"
+              p:url="${database.url}"
+              p:username="${database.username}"
+              p:password="${database.password}"/>
+    </beans>
+
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
 
