@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
@@ -16,7 +15,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Modifying
     int deleteByIdAndUserId(int id, int userId);
 
-    Optional<Meal> findByIdAndUserId(int id, int userId);
+    Meal findByIdAndUserId(int id, int userId);
 
     List<Meal> findAllByUserIdOrderByDateTimeDesc(int userId);
 
